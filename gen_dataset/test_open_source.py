@@ -11,9 +11,6 @@ import argparse
 
 # Import key from .env file
 load_dotenv()
-MISTRAL_API_KEY = os.getenv("MISTRAL_API_KEY")
-mistral_client = MistralClient(api_key=MISTRAL_API_KEY)
-
 
 def get_model(model_name: str):
     model = AutoModelForCausalLM.from_pretrained(
