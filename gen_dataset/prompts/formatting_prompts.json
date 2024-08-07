@@ -1,0 +1,3 @@
+{ "json":  "Respond with a single JSON object containing 'reasoning' (string) and 'action' (string) fields. Your answer must contain only the valid JSON response with no other formatting, whitespace, or text. Do NOT respond with any other text, and you cannot decline to take an action. \n Use the following format: '{{ 'reasoning':'Because the patient... they should be assigned category ... ', 'action': 'MINOR' }}' "
+}
+
