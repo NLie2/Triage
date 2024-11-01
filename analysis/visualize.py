@@ -9,7 +9,7 @@ import pandas as pd
 
 labels = ["MINOR", "EXPECTANT/DECEASED", "DELAYED", "IMMEDIATE"]
 
-fontsize = 20
+fontsize = 30
 
 # Pivot the DataFrame for the heatmap
 # def visualize(summary):
@@ -39,18 +39,25 @@ def visualize(summary):
     pivot_df = summary.pivot_table(index='model', columns='prompt_type', values='proportion_correct')
     
     # Plot the heatmap
-    plt.figure(figsize=(15, 15))
+    plt.figure(figsize=(10, 10))
     sns.heatmap(pivot_df, annot=True, cmap='Greens', fmt=".2f", vmin=0.25, vmax=1, annot_kws={"fontsize": fontsize})
-    plt.title('Proportion of Correct Answers by Model and Ethics Prompt Type', fontsize=fontsize)
-    plt.xlabel('Ethics Prompt', fontsize=fontsize)
-    plt.ylabel('Model', fontsize=fontsize)
-    plt.xticks(fontsize=fontsize)
-    plt.yticks(fontsize=fontsize-2)
+    # plt.title('Proportion of Correct Answers by Model and Ethics Prompt Type', fontsize=fontsize)
+    plt.xlabel('Ethics Prompt', fontsize=fontsize,  labelpad=20)
+    plt.ylabel('', fontsize=fontsize,  labelpad=20, rotation= 0.3)
+    plt.xticks(fontsize=fontsize, rotation=45)
+    plt.yticks(fontsize=fontsize-2, rotation=0)
+    
+    # tigth layout
+    plt.tight_layout()
+    
+    # save as pdf
+    plt.savefig('/data/nathalie_maria_kirch/Triage/images/pattern_triage_all_model.pdf', format='pdf', dpi=300, bbox_inches='tight')
+    
     plt.show()
 
 
 
-def visualize_bar_graph(summary, analysis_type='average', prompt_type=None):
+def visualize_bar_graph(summary, analysis_type='average', prompt_type=None, title=""):
     if analysis_type == 'average':
         model_means_all = summary.groupby('model')['proportion_correct'].mean().sort_values(ascending=False)  # Sort descending
         plt.figure(figsize=(10, 6))
@@ -77,7 +84,7 @@ def visualize_bar_graph(summary, analysis_type='average', prompt_type=None):
         sns.barplot(data=doctor_sorted, x='model', y='proportion_correct', order=order, palette=colors)
         plt.xlabel('', fontsize=fontsize)
         plt.ylabel('Proportion Correct', fontsize=fontsize)
-        plt.title(f'Performance of Models in {prompt_type} Prompt Type', fontsize=fontsize)
+        # plt.title(f'Performance of Models in {prompt_type} Prompt Type', fontsize=fontsize)
         plt.xticks(rotation=45, fontsize=fontsize-2)
         plt.yticks(fontsize=fontsize-2)
         plt.tight_layout()
@@ -116,6 +123,8 @@ def visualize_bar_graph(summary, analysis_type='average', prompt_type=None):
         plt.legend(title='', fontsize=fontsize-2)
         plt.tight_layout()
         
+    plt.savefig(f'/data/nathalie_maria_kirch/Triage/images/ordering_{title}_case.pdf', format='pdf', dpi=300, bbox_inches='tight')
+
     plt.show()
 
 
@@ -450,43 +459,83 @@ def avg_error_analysis(dataset, categories):
 
 
 
-def visualize_avg_errors(model_results, n_models, bar_width, model_or_category="Model"): 
+# def visualize_avg_errors(model_results, n_models, bar_width, model_or_category="Model"): 
+#     # Sort the model results dictionary by total errors in descending order
+#     sorted_model_names = sorted(model_results.keys(), key=lambda x: model_results[x]['total_errors'], reverse=True)
+
+#     # Now reorganize the data based on the sorted order
+#     model_results = {model: model_results[model] for model in sorted_model_names}
+#     # Set up the figure
+#     fig, ax = plt.subplots(figsize=(10, 6))
+
+#     n_models = len(model_results)
+#     index = np.arange(n_models)
+#     bar_width = 0.2
+
+#     colors = {
+#         'total_errors': 'grey',  # Grey color
+#         'instruction_not_followed': 'aqua',  # Light green color
+#         'overcaring': 'lightgreen',  # Light orange color, using hex code
+#         'undercaring': 'lightcoral'  # Light yellow color, using hex code
+#     }
+
+#     # Plot each error type
+#     for i, error_type in enumerate(['total_errors', 'instruction_not_followed', 'overcaring', 'undercaring']):
+#         values = [model_results[model][error_type] for model in model_results]
+#         plt.bar(index + i * bar_width, values, bar_width, label=error_type, color=colors[error_type])
+
+#     plt.xlabel('', fontsize=fontsize)
+#     plt.ylabel('Average Error Scores', fontsize=fontsize)
+#     # plt.title(f'Average Error Scores Per {model_or_category}', fontsize=fontsize)
+#     plt.xticks(index + 1.5 * bar_width, model_results.keys(), fontsize=fontsize-2, rotation=45)
+#     plt.yticks(fontsize=fontsize-2)
+
+#     # Place the legend outside the plot area
+#     plt.legend(fontsize=fontsize-4, loc='upper center', bbox_to_anchor=(0.5, -0.4), ncol=2)
+
+#     plt.tight_layout()
+#     plt.savefig(f'/data/nathalie_maria_kirch/Triage/images/average_error_scores_{model_or_category}.pdf', format='pdf', dpi=300, bbox_inches='tight')
+#     plt.show()
+
+def visualize_avg_errors(model_results, n_models, bar_width=0.70, model_or_category="Model"): 
     # Sort the model results dictionary by total errors in descending order
     sorted_model_names = sorted(model_results.keys(), key=lambda x: model_results[x]['total_errors'], reverse=True)
 
-    # Now reorganize the data based on the sorted order
+    # Reorganize the data based on the sorted order
     model_results = {model: model_results[model] for model in sorted_model_names}
+    
     # Set up the figure
-    fig, ax = plt.subplots(figsize=(10, 6))
+    fig, ax = plt.subplots(figsize=(10, 12))  # Increase figure width if necessary
 
     n_models = len(model_results)
     index = np.arange(n_models)
-    bar_width = 0.2
 
     colors = {
-        'total_errors': 'grey',  # Grey color
-        'instruction_not_followed': 'aqua',  # Light green color
-        'overcaring': 'lightgreen',  # Light orange color, using hex code
-        'undercaring': 'lightcoral'  # Light yellow color, using hex code
+        'total_errors': 'grey',            # Grey color
+        'instruction_not_followed': 'aqua',  # Aqua color
+        'overcaring': 'lightgreen',         # Light green color
+        'undercaring': 'lightcoral'         # Light coral color
     }
 
-    # Plot each error type
+    # Set maximum of y-axis to 1
+    plt.ylim(0, 0.8)
+
+    # Plot each error type with wider bars
     for i, error_type in enumerate(['total_errors', 'instruction_not_followed', 'overcaring', 'undercaring']):
         values = [model_results[model][error_type] for model in model_results]
         plt.bar(index + i * bar_width, values, bar_width, label=error_type, color=colors[error_type])
 
     plt.xlabel('', fontsize=fontsize)
     plt.ylabel('Average Error Scores', fontsize=fontsize)
-    plt.title(f'Average Error Scores Per {model_or_category}', fontsize=fontsize)
-    plt.xticks(index + 1.5 * bar_width, model_results.keys(), fontsize=fontsize-2)
-    plt.yticks(fontsize=fontsize-2)
+    plt.xticks(index + (len(colors) - 1) * bar_width / 2, model_results.keys(), fontsize=fontsize - 2, rotation=45)
+    plt.yticks(fontsize=fontsize - 2)
 
     # Place the legend outside the plot area
-    plt.legend(fontsize=fontsize-4, loc='upper center', bbox_to_anchor=(0.5, -0.05), ncol=2)
+    plt.legend(fontsize=fontsize - 4, loc='upper center', bbox_to_anchor=(0.5, -0.25), ncol=2)
 
     plt.tight_layout()
+    plt.savefig(f'/data/nathalie_maria_kirch/Triage/images/average_error_scores_{model_or_category}.pdf', format='pdf', dpi=300, bbox_inches='tight')
     plt.show()
-
 
 
 
