@@ -1,4 +1,5 @@
 .env
+*.csv
 images/
 __pycache__
 dataset_viewer.ipynb
