@@ -1,4 +1,4 @@
-# Triage
+# TRIAGE: Ethical Benchmarking of AI Models Through Mass Casualty Simulations
 
 We present the TRIAGE Benchmark: a novel machine ethics (ME) benchmark which incorporates triage training
 scenarios used to prepare medical professionals for ethical decision-making during mass casualty events. These
